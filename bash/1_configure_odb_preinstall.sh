@@ -55,7 +55,7 @@ set_oracle_user_password() {
 
 create_oracle_user_home_dir() {
     echo "Creating home directory for user '$ORACLE_USER_NAME'"
-    mkdir -p /u01/app/oracle/product/19c/db_home || die "Oracle DB home directory could not be created"
+    mkdir -p /u01/app/oracle/product/19c/dbhome_1 || die "Oracle DB home directory could not be created"
 }
 
 create_oracle_user_privileges() {

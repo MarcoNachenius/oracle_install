@@ -84,7 +84,7 @@ die_package() {
 # Purpose:  Install Oracle database preinstall package using dnf installer
 # ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
 install_oracle_database() {
-    echo "Installing Oracle database preinstall package..."
+    echo "Installing Oracle DB 19c preinstall package..."
     dnf install -y oracle-database-preinstall-19c
 }
 

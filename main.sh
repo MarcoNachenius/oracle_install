@@ -51,7 +51,7 @@ main() {
     bash bash/0_preinstall_odb_19c.sh || die "Preinstall script(bash/0_preinstall_odb_19c.sh) execution failed."
     bash bash/1_configure_odb_preinstall.sh || die "Configuration script(bash/1_configure_odb.sh) execution failed."
     bash bash/2_install_main_odb_rmp_package.sh || die "RPM installation script(bash/2_install_main_odb_rmp_package.sh) execution failed."
-    bash bash/3_configure_odb_postinstall.sh || die "Post-install configuration script(bash/3_configure_odb_postinstall.sh) execution failed."
+    bash bash/3_create_database.sh || die "Post-install configuration script(bash/3_create_database.sh) execution failed."
 }
 
 main || die "Main script could not be initiated"
