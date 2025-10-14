@@ -1,0 +1,2 @@
+# Basic requirements
+oracledb>=1.5.0

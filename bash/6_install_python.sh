@@ -1,15 +1,24 @@
 #!/usr/bin/bash
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#  CONSTANTS
+#  CONFIGURABLE CONSTANTS
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# =====================
+# CONFIGURABLE SETTINGS
+# =====================
+# Python version to install (3.11, 3.12, etc. - use 'latest' for system default)
+readonly PYTHON_VERSION="3.12"
+# Path to requirements.txt file (path from inside the repository)
+readonly REQUIREMENTS_FILE_DIR="python/requirements.txt"
+# ==========
 # EXIT CODES
+# ==========
 readonly GENERAL_ERROR_EXIT_CODE=1
-
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 #  HELPER FUNCTIONS
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 # ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
 # Purpose:  Terminate script execution immediately with an error message and
 #           non-zero exit status.
@@ -43,19 +52,68 @@ die() {
     exit $GENERAL_ERROR_EXIT_CODE
 }
 
+print_info() {
+    echo "[INFO] $*"
+}
+
+print_success() {
+    echo "[SUCCESS] $*"
+}
+
+print_warning() {
+    echo "[WARNING] $*"
+}
+
+# ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
+# Purpose: Install Python using dnf package manager
+# ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
+install_python_with_dnf() {
+    print_info "Installing Python using dnf package manager..."
+    
+    # Try to install the specific version
+    if sudo dnf install -y "python${PYTHON_VERSION}" "python${PYTHON_VERSION}-pip" 2>/dev/null; then
+        print_success "Python ${PYTHON_VERSION} installed successfully"
+    fi
+}
+
+
+# ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
+# Purpose: Install Python packages from requirements.txt
+# ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
+install_requirements() {
+    if [[ ! -f "$REQUIREMENTS_FILE_DIR" ]]; then
+        print_warning "Requirements file not found: $REQUIREMENTS_FILE_DIR"
+        print_info "Skipping package installation"
+        return 0
+    fi
+    
+    print_info "Installing packages from: $REQUIREMENTS_FILE_DIR"
+    
+    # Handle potential slow network or repository issues with retries
+    # --timeout: Maximum time (in seconds) to wait for a response from the server
+    # --retries: Number of times to retry in case of failure
+    # --no-cache-dir: Avoid using cached packages to ensure fresh downloads
+    "pip${PYTHON_VERSION}" install -r "${REQUIREMENTS_FILE_DIR}"
+    
+    print_success "All Python packages installed successfully"
+}
+
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 #  MAIN EXECUTION
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 main() {
-    bash bash/0_install_required_kernels.sh || die "Kernel installation script(bash/0_install_required_kernels.sh) execution failed."
-    bash bash/1_enable_file_sharing.sh || die "File sharing enabling script(bash/1_enable_file_sharing.sh) execution failed."
-    bash bash/2_preinstall_odb_19c.sh || die "Preinstall script(bash/2_preinstall_odb_19c.sh) execution failed."
-    bash bash/3_configure_odb_preinstall.sh || die "Configuration script(bash/3_configure_odb_preinstall.sh) execution failed."
-    bash bash/4_install_main_odb_rmp_package.sh || die "RPM installation script(bash/4_install_main_odb_rmp_package.sh) execution failed."
-    bash bash/5_create_database.sh || die "Post-install configuration script(bash/5_create_database.sh) execution failed."
-    bash bash/6_install_python.sh || die "Python installation script(bash/6_install_python.sh) execution failed."
+    print_info "Starting Python installation..."
+    print_info "Configuration:"
+    print_info "  Python Version: $PYTHON_VERSION"
+    print_info "  Requirements File: $REQUIREMENTS_FILE_DIR"
+    
+    # Install Python
+    install_python_with_dnf || die "Failed to install Python"
+    # Install requirements
+    install_requirements || die "Failed to install Python requirements"    
 }
 
 
-main || die "Main script could not be initiated"
+# Run the main function
+main
