@@ -7,7 +7,7 @@
 # CONFIGURABLE SETTINGS
 # =====================
 # Python version to install (3.11, 3.12, etc. - use 'latest' for system default)
-readonly PYTHON_VERSION="3.12"
+readonly PYTHON_VERSION="3.14"
 # Path to requirements.txt file (path from inside the repository)
 readonly REQUIREMENTS_FILE_DIR="python/requirements.txt"
 # ==========
@@ -111,9 +111,9 @@ main() {
     # Install Python
     install_python_with_dnf || die "Failed to install Python"
     # Install requirements
-    install_requirements || die "Failed to install Python requirements"    
+    install_requirements || die "Failed to install Python requirements"
 }
 
 
 # Run the main function
-main
+main || die "Python installation script failed unexpectedly."

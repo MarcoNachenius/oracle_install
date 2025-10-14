@@ -85,7 +85,8 @@ die_package() {
 # ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
 install_oracle_database() {
     echo "Installing Oracle DB 19c preinstall package..."
-    dnf install -y oracle-database-preinstall-19c
+    dnf install -y oracle-database-preinstall-19c || return 1
+    return 0
 }
 
 
