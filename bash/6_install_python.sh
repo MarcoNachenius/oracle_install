@@ -7,7 +7,7 @@
 # CONFIGURABLE SETTINGS
 # =====================
 # Python version to install (3.11, 3.12, etc. - use 'latest' for system default)
-readonly PYTHON_VERSION="3.14"
+readonly PYTHON_VERSION="3.12"
 # Path to requirements.txt file (path from inside the repository)
 readonly REQUIREMENTS_FILE_DIR="python/requirements.txt"
 # ==========
