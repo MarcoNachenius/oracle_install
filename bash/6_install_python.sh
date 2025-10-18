@@ -10,6 +10,8 @@
 readonly PYTHON_VERSION="3.12"
 # Path to requirements.txt file (path from inside the repository)
 readonly REQUIREMENTS_FILE_DIR="python/requirements.txt"
+# Directory for the Python virtual environment (path from inside the repository)
+readonly VENV_DIR="python/.venv"
 # ==========
 # EXIT CODES
 # ==========
@@ -80,7 +82,34 @@ install_python_with_dnf() {
 # ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
 # Purpose: Create and activate a Python virtual environment
 # ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
-
+enable_virtual_env() {
+    # Check if virtual environment already exists
+    if [[ -d "$VENV_DIR" ]]; then
+        print_info "Virtual environment already exists at: $VENV_DIR"
+    else
+        # Create virtual environment
+        print_info "Creating virtual environment at: $VENV_DIR"
+        python3.12 -m venv "$VENV_DIR"
+        
+        if [[ $? -ne 0 ]]; then
+            print_error "Failed to create virtual environment"
+            return 1
+        fi
+    fi
+    
+    # Activate it - FIXED PATH
+    print_info "Activating virtual environment"
+    source "$VENV_DIR/bin/activate"
+    
+    # Verify activation
+    if [[ -n "$VIRTUAL_ENV" ]]; then
+        print_success "Virtual environment activated: $VIRTUAL_ENV"
+        return 0
+    else
+        print_error "Failed to activate virtual environment"
+        return 1
+    fi
+}
 
 # ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●
 # Purpose: Install Python packages from requirements.txt
