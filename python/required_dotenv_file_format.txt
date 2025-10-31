@@ -1,0 +1,11 @@
+# Oracle Database Configuration
+ORACLE_USERNAME=
+ORACLE_PASSWORD=
+ORACLE_HOST=
+ORACLE_PORT=
+ORACLE_SERVICE_NAME=
+ORACLE_SID=
+
+# Application Settings
+APP_ENV=
+DEBUG=
