@@ -55,6 +55,7 @@ main() {
     bash bash/4_install_main_odb_rmp_package.sh || die "RPM installation script(bash/4_install_main_odb_rmp_package.sh) execution failed."
     bash bash/5_create_database.sh || die "Post-install configuration script(bash/5_create_database.sh) execution failed."
     bash bash/6_install_python.sh || die "Python installation script(bash/6_install_python.sh) execution failed."
+    bash bash/7_write_to_odb.sh || die "Database writing script(bash/7_write_to_odb.sh) execution failed."
 }
 
 

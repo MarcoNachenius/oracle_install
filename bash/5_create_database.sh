@@ -28,6 +28,10 @@ readonly RECOVERY_AREA_SIZE=1024
 readonly REDO_LOG_FILE_SIZE=100
 readonly EM_CONFIGURATION="NONE"
 
+# PYTHON ENV FILE CONFIGURATION
+readonly PYTHON_DIR="python"
+readonly ENV_FILE=".env"
+
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 #  HELPER FUNCTIONS
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -35,7 +39,6 @@ die() {
     echo "[ERROR] $*" >&2
     exit $GENERAL_ERROR_EXIT_CODE
 }
-
 
 create_database() {
     echo "Creating Oracle database with custom configuration..."
@@ -70,13 +73,42 @@ create_database() {
     echo "Database created successfully"
 }
 
+create_python_env_file() {
+    echo "Creating Python .env file..."
+    
+    # Create python directory if it doesn't exist
+    mkdir -p "$PYTHON_DIR" || die "Failed to create python directory"
+    
+    # Create .env file with database configuration
+    cat > "${PYTHON_DIR}/${ENV_FILE}" << EOF
+# Oracle Database Configuration
+ORACLE_USERNAME=system
+ORACLE_PASSWORD=$SYSTEM_PASSWORD
+ORACLE_HOST=localhost
+ORACLE_PORT=1521
+ORACLE_SERVICE_NAME=$PDB_NAME
+ORACLE_SID=$DB_SID
+
+# Application Settings
+APP_ENV=development
+DEBUG=True
+EOF
+
+    # Set appropriate permissions for the .env file
+    chmod 600 "${PYTHON_DIR}/${ENV_FILE}" || die "Failed to set permissions on .env file"
+    
+    echo "Python .env file created successfully at ${PYTHON_DIR}/${ENV_FILE}"
+}
+
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 #  MAIN EXECUTION
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 main() {
     create_database 
+    create_python_env_file
 }
 
 main || die "Database creation process failed"
 
 echo "[SUCCESS] Oracle Database has been created successfully with custom configuration!"
+echo "[SUCCESS] Python .env file has been created in the ${PYTHON_DIR}/ directory!"

@@ -6,8 +6,8 @@
 # =====================
 # CONFIGURABLE SETTINGS
 # =====================
-# Python version to install (3.11, 3.12, etc. - use 'latest' for system default)
-readonly PYTHON_VERSION="3.13.9"
+# Python version to install (recommended: 3.13.9 - use 'latest' for system default)
+readonly PYTHON_VERSION="3"
 # Path to requirements.txt file (path from inside the repository)
 readonly REQUIREMENTS_FILE_DIR="python/requirements.txt"
 # Directory for the Python virtual environment (path from inside the repository)
